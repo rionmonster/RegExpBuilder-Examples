@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="Scripts/RegExpBuilder.js"></script>
+    <script type="text/javascript">
+        //Constant collection of digits
+        var digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+
+        /* Currency Related Examples */
+
+        //Simple Currency Validation ($##.##)
+        function validateCurrency(target){
+            //Grab our target element
+            var element = document.getElementById(target);
+      
+            //Get the value of the target
+            var value = element.value;
+
+            //Build a Regular Expression to validate against
+            var regex = /^\$\d+\.\d{2}$/;
+      
+            //Validate your value and alert the result
+            alert(regex.test(value));
+        }
+    
+        //Simple Currency Validation using RegExpBuilder ($##.##)
+        function validateCurrencyWithRegExpBuilder(target){
+            //Grab our target element
+            var element = document.getElementById(target);
+      
+            //Get the value of the target
+            var value = element.value;
+
+            //Build a Regular Expression to validate against using the RegExpBuilder
+            var regex = new RegExpBuilder()
+                           .startOfLine()           // ^
+                           .then("$")               // \$
+                           .some(digits)            // \d+
+                           .then(".")               // \.
+                           .exactly(2).from(digits) // \d{2}
+                           .endOfLine()             // $
+                           .getRegExp();        
+            
+            //Validate your value and alert the result
+            alert(regex.test(value));
+        }
+
+        //View RegExpBuilder Expression for Currency Validation
+        function viewCurrencyRegExpBuilderExpression() {
+            
+            //Build your Expression
+            var regex = new RegExpBuilder()
+                            .startOfLine()           // ^
+                            .then("$")               // \$
+                            .some(digits)            // \d+
+                            .then(".")               // \.
+                            .exactly(2).from(digits) // \d{2}
+                            .endOfLine()             // $
+                            .getRegExp();
+
+            //Validate your value and alert the result
+            alert(regex);
+        }
+
+        /* Phone Related Examples */
+
+        //Simple Phone Validation (###-###-####)
+        function validatePhone(target) {
+            //Grab our target element
+            var element = document.getElementById(target);
+
+            //Get the value of the target
+            var value = element.value;
+
+            //Build a Regular Expression to validate against
+            var regex = /^\d{3}-\d{3}-\d{4}$/;
+
+            //Validate your value and alert the result
+            alert(regex.test(value));
+        }
+
+        //Simple Phone Validation using RegExpBuilder (###-###-####)
+        function validatePhoneWithRegExpBuilder(target) {
+            //Grab our target element
+            var element = document.getElementById(target);
+
+            //Get the value of the target
+            var value = element.value;
+
+            //Build a Regular Expression to validate against using the RegExpBuilder
+            var regex = new RegExpBuilder()
+                            .startOfLine()
+                            .exactly(3).from(digits).then("-")
+                            .exactly(3).from(digits).then("-")
+                            .exactly(4).from(digits)
+                            .endOfLine()
+                            .getRegExp();
+
+            //Validate your value and alert the result
+            alert(regex.test(value));
+        }
+
+        //View RegExpBuilder Expression for Simple Phone Validation
+        function viewPhoneRegExpBuilderExpression() {
+            //Build a Regular Expression to validate against (using the global flag 'g')
+            var regex = new RegExpBuilder()
+                            .startOfLine()
+                            .exactly(3).from(digits).then("-")
+                            .exactly(3).from(digits).then("-")
+                            .exactly(4).from(digits)
+                            .endOfLine()
+                            .getRegExp();
+
+            //Validate your value and alert the result
+            alert(regex);
+        }
+
+        /* Optional Area Code Phone Examples */
+
+        //Simple Phone Validation with Optional Area Code (###-###-#### or ###-####)
+        function validatePhoneWithOptionalAreaCode(target) {
+            //Grab our target element
+            var element = document.getElementById(target);
+
+            //Get the value of the target
+            var value = element.value;
+
+            //Build a Regular Expression to validate against
+            var regex = /^(\d{3}-){0,1}\d{3}-\d{4}$/;
+
+            //Validate your value and alert the result
+            alert(regex.test(value));
+        }
+
+        //Simple Phone Validation with Optional Area Code using RegExpBuilder (###-###-#### or ###-####)
+        function validatePhoneWithOptionalAreaCodeWithRegExpBuilder(target) {
+            //Grab our target element
+            var element = document.getElementById(target);
+
+            //Get the value of the target
+            var value = element.value;
+
+            //Build our first section (the optional area code part)
+            var areacode = new RegExpBuilder()
+                               .exactly(3).from(digits).then("-"); // \d{3}-
+
+            //Build a Regular Expression to validate against using the RegExpBuilder
+            var regex = new RegExpBuilder()
+                            .startOfLine()                          // ^
+                            .min(0).max(1).like(areacode).asGroup() // (\d{3}-){0,1}
+                            .exactly(3).from(digits).then("-")      // \d{3}-
+                            .exactly(4).from(digits)                // \d{4}
+                            .endOfLine()                            // $
+                            .getRegExp();
+
+            //Validate your value and alert the result
+            alert(regex.test(value));
+        }
+
+        //View RegExpBuilder Expression for Simple Phone Validation with Optional Area Code
+        function viewPhoneOptionalAreaCodeRegExpBuilderExpression() {
+
+            //Build our first section (the optional area code part)
+            var areacode = new RegExpBuilder().exactly(3).from(digits).then("-");
+
+            //Build a Regular Expression to validate against using the RegExpBuilder
+            var regex = new RegExpBuilder()
+                            .startOfLine()                          // ^
+                            .min(0).max(1).like(areacode).asGroup() // (\d{3}-){0,1}
+                            .exactly(3).from(digits).then("-")      // \d{3}-
+                            .exactly(4).from(digits)                // \d{4}
+                            .endOfLine()                            // $
+                            .getRegExp();
+
+            //Validate your value and alert the result
+            alert(regex);
+        }
+
+        /* Advanced Examples */
+
+        //Advanced Phone Validation with Optional Area Code and Formats (###-####, ###-###-####, ### ####, ### ### #####, ###.#### and ###.###.####)
+        function validatePhoneAdvanced(target) {
+            //Grab our target element
+            var element = document.getElementById(target);
+
+            //Get the value of the target
+            var value = element.value;
+
+            //Build a Regular Expression to validate against
+            var regex = /^(((\d{3}-){0,1}\d{3}-\d{4})|((\d{3}\s){0,1}\d{3}\s\d{4})|((\d{3}\.){0,1}\d{3}\.\d{4}))$/;
+
+            //Validate your value and alert the result
+            alert(regex.test(value));
+        }
+
+        //Advanced Phone Validation with Optional Area Code and Formats using RegExpBuilder (###-####, ###-###-####, ### ####, ### ### #####, ###.#### and ###.###.####)
+        function validatePhoneAdvancedRegExpBuilder(target) {
+            //Grab our target element
+            var element = document.getElementById(target);
+
+            //Get the value of the target
+            var value = element.value;
+
+            //Handle prefixes
+            var areacode_dash = new RegExpBuilder().exactly(3).from(digits).then("-");  // \d{3}-
+            var areacode_space = new RegExpBuilder().exactly(3).from(digits).then(" "); // \d{3} 
+            var areacode_dot = new RegExpBuilder().exactly(3).from(digits).then(".");   // \d{3}\.
+
+            //Build each of the individual components
+            var dashes = new RegExpBuilder()
+                            .min(0).max(1).like(areacode_dash).asGroup()  // (\d{3}-){0,1}
+                            .exactly(3).from(digits).then("-")            // \d{3}-
+                            .exactly(4).from(digits);                     // \d{4}
+
+            var spaces = new RegExpBuilder()
+                            .min(0).max(1).like(areacode_space).asGroup()  // (\d{3}-){0,1}
+                            .exactly(3).from(digits).then(" ")             // \d{3} 
+                            .exactly(4).from(digits);                      // \d{4}
+
+            var dots = new RegExpBuilder()
+                           .min(0).max(1).like(areacode_dot).asGroup()  // (\d{3}\.){0,1}
+                           .exactly(3).from(digits).then(".")           // \d{3}\.
+                           .exactly(4).from(digits);                    // \d{4}
+
+            //Handle build final expression
+            var regex = new RegExpBuilder()
+                            .startOfLine()             // ^
+                            .eitherLike(dashes)        // ((\d{3}-){0,1}\d{3}-\d{4})
+                            .orLike(spaces).asGroup()  // |((\d{3}\s){0,1}\d{3}\s\d{4})
+                            .orLike(dots).asGroup()    // |((\d{3}\.){0,1}\d{3}\.\d{4}))
+                            .endOfLine()               // $
+                            .getRegExp();
+
+            //Validate your value and alert the result
+            alert(regex.test(value));
+        }
+
+        //View RegExpBuilder Expression for Advanced Phone Validation
+        function viewPhoneAdvancedRegExpBuilderExpression() {
+
+            //Handle prefixes
+            var areacode_dash = new RegExpBuilder().exactly(3).from(digits).then("-");  // \d{3}-
+            var areacode_space = new RegExpBuilder().exactly(3).from(digits).then(" "); // \d{3} 
+            var areacode_dot = new RegExpBuilder().exactly(3).from(digits).then(".");   // \d{3}\.
+
+            //Build each of the individual components
+            var dashes = new RegExpBuilder()
+                            .min(0).max(1).like(areacode_dash).asGroup()  // (\d{3}-){0,1}
+                            .exactly(3).from(digits).then("-")            // \d{3}-
+                            .exactly(4).from(digits);                     // \d{4}
+
+            var spaces = new RegExpBuilder()
+                            .min(0).max(1).like(areacode_space).asGroup()  // (\d{3}-){0,1}
+                            .exactly(3).from(digits).then(" ")             // \d{3} 
+                            .exactly(4).from(digits);                      // \d{4}
+
+            var dots = new RegExpBuilder()
+                           .min(0).max(1).like(areacode_dot).asGroup()  // (\d{3}\.){0,1}
+                           .exactly(3).from(digits).then(".")           // \d{3}\.
+                           .exactly(4).from(digits);                    // \d{4}
+
+            //Handle build final expression
+            var regex = new RegExpBuilder()
+                            .startOfLine()             // ^
+                            .eitherLike(dashes)        // ((\d{3}-){0,1}\d{3}-\d{4})
+                            .orLike(spaces).asGroup()  // |((\d{3}\s){0,1}\d{3}\s\d{4})
+                            .orLike(dots).asGroup()    // |((\d{3}\.){0,1}\d{3}\.\d{4}))
+                            .endOfLine()               // $
+                            .getRegExp();
+
+            //Validate your value and alert the result
+            alert(regex);
+        }
+
+    </script>
+</head>
+<body>
+    <pre>American Currency ($##.##)</pre>
+    <input id='currency_normal' value='$0.42' /> <input type='button' value='Validate' onclick='validateCurrency("currency_normal")' />
+    <hr />
+    <pre>American Currency ($##.##) [RegExpBuilder]</pre>
+    <input id='currency_regexpbuilder' value='$0.42' /> <input type='button' value='Validate' onclick='validateCurrencyWithRegExpBuilder("currency_regexpbuilder")' /> <input type="button" value="View Generated Expression" onclick="viewCurrencyRegExpBuilderExpression();" />
+    <hr />
+    <pre>Phone with Area Code (###-###-####)</pre>
+    <input id='phone_normal' value='555-555-5555' /> <input type='button' value='Validate' onclick='validatePhone("phone_normal")' />
+    <hr />
+    <pre>Phone with Area Code (###-###-####) [RegExpBuilder]</pre>
+    <input id='phone_regexbuilder' value='555-555-5555' /> <input type='button' value='Validate' onclick='validatePhoneWithRegExpBuilder("phone_regexbuilder")' /> <input type="button" value="View Generated Expression" onclick="viewPhoneRegExpBuilderExpression();" />
+    <hr />
+    <pre>Phone With Optional Area Code (###-###-#### or ###-####)</pre>
+    <input id='phone_optional' value='555-555-5555' /> <input type='button' value='Validate' onclick='validatePhoneWithOptionalAreaCode("phone_optional")' />
+    <hr />
+    <pre>Phone With Optional Area Code (###-###-#### or ###-####) [RegExpBuilder]</pre>
+    <input id='phone_optional_regexbuilder' value='555-555-5555' /> <input type='button' value='Validate' onclick='validatePhoneWithOptionalAreaCodeWithRegExpBuilder("phone_optional_regexbuilder")' /> <input type="button" value="View Generated Expression" onclick="viewPhoneOptionalAreaCodeRegExpBuilderExpression();" />
+    <hr />
+    <pre>Phone With Optional Area Code and Formats (###-###-####, ###-####, ### ### ####, ### ####, ###.###.#### and ###.####)</pre>
+    <input id='phone_advanced' value='555 555 5555' /> <input type='button' value='Validate' onclick='validatePhoneAdvanced("phone_advanced")' />
+    <hr />
+    <pre>Phone With Optional Area Code and Formats (###-###-####, ###-####, ### ### ####, ### ####, ###.###.#### and ###.####) [RegExpBuilder]</pre>
+    <input id='phone_advanced_regexbuilder' value='555.555.5555' /> <input type='button' value='Validate' onclick='validatePhoneAdvancedRegExpBuilder("phone_advanced_regexbuilder")' /> <input type="button" value="View Generated Expression" onclick="viewPhoneAdvancedRegExpBuilderExpression();" />
+</body>
+</html>
